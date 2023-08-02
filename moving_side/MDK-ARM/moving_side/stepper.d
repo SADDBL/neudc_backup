@@ -38,3 +38,4 @@ moving_side\stepper.o: D:\keil3.5\ARM\ARMCC\Bin\..\include\math.h
 moving_side\stepper.o: ..\User\macro.h
 moving_side\stepper.o: ..\User\connect.h
 moving_side\stepper.o: D:\keil3.5\ARM\ARMCC\Bin\..\include\string.h
+moving_side\stepper.o: ..\User\control.h

@@ -103,9 +103,16 @@ int main(void)
 	HAL_TIM_OC_Start_IT(&htim4,TIM_CHANNEL_1);
 	HAL_TIM_OC_Start_IT(&htim4,TIM_CHANNEL_2);
 	HAL_UART_Receive_IT(&huart1,&(uart_ins1.Rxbuf),1);
+	HAL_UART_Receive_IT(&huart2,&(uart_ins2.Rxbuf),1);
 	
 	Init_Stepper(&stepper1,dir1_GPIO_Port,dir1_Pin,&htim2,TIM_CHANNEL_1,0.1125f);
 	Init_Stepper(&stepper2,dir2_GPIO_Port,dir2_Pin,&htim2,TIM_CHANNEL_2,0.1125f);
+	
+	laser_init(&laser_ins,0,0);
+	//StpDistanceSetBlocking(&stepper1,-360,200,100);
+	drawline(0,0,1000,0);
+	HAL_Delay(1000);
+	//drawline(0,-1000,0,-500);
   /* USER CODE END 2 */
 
   /* Infinite loop */

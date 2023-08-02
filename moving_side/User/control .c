@@ -1,14 +1,171 @@
 #include "control.h"
+#include "macro.h"
+#include <math.h>
+#include <math.h>
+
 
 /************************** LYF Start ************************/
-//电机插补
-void drawline(float x0,float y0,float xe,float ye){
+/*
+ * @brief：转到插补目标左边
+ * @param：x，y	目标左边
+ * @return： 无
+   */
+void calibration(void){
+	static uint8_t state_val = 0,flag = NOT_OK,exit = NOT_OK;
+	while(1){
+		switch (state_val){
+			case 0:{
+				pid_reset(&pid_stp1);
+				pid_reset(&pid_stp2);
+				state_val = hmi_data_ins.set_pos;
+				//退出
+				if(state_val==6){
+					state_val=2;
+					break;
+				}
+				//继续
+				else if(state_val==0)
+					break;
+				laser_set_target(&laser_ins,calibration_point_list[2*(state_val-1)],calibration_point_list[2*state_val-1]);
+				Laser_On;
+				state_val++;
+				flag  =NOT_OK;
+				break;
+			}
+			//校正原点
+			case 1:{
+				flag = focus_calibration_point(&laser_ins);
+				if(flag==OK){
+					flag = NOT_OK;
+					state_val=0;
+					HMISends("set_page.t0.txt=\"完成\"");
+					hmi_data_ins.set_pos = 0;
+				}
+				break;
+			}
+			case 2:{
+				exit = OK;
+				break;
+			}
+		}
+		if(exit==OK) break;
+	}
+}
 	
+
+//电机插补
+/*
+ * @brief：转到插补目标坐标，并更新激光点坐标
+ * @param：x，y	目标坐标
+ * @return： 无
+   */
+void turn_coordinate(float x, float y)
+{
+  float angle_x, angle_y;
+  float d_angx, d_angy;
+  float sqx;
+	
+	//计算需要转到的角度
+  sqx = sqrtf(L * L + x * x);
+  angle_x = atan(x / L) * 180 / PI;
+  angle_y = atan(y / sqx) * 180 / PI;
+	
+	//计算需要转过的角度
+	d_angx = angle_x - stepper1.position_ctnow*0.1125f;
+	d_angy = angle_y - stepper2.position_ctnow*0.1125f;
+	
+	if(fabs(d_angx)>0.1125f){
+		StpDistanceSetBlocking(&stepper1,d_angx,150,80);
+		laser_ins.x_axis = x;
+		}
+	if(fabs(d_angy)>0.1125f){
+		StpDistanceSetBlocking(&stepper2,d_angy,150,80);
+		laser_ins.y_axis = y;
+	}
+}
+
+/*
+ * @brief：直线运动插补
+ * @param：起点坐标（X0, Y0），终点坐标（Xe, Ye）
+ * @return： 无
+   */
+void drawline(int X0,int Y0,int Xe,int Ye){
+	int NXY;              //总步数
+  int Fm = 0;           //偏差
+  int Xm = X0, Ym = Y0; //当前坐标
+  uint8_t XOY;            //象限
+	
+	if(X0!=laser_ins.x_axis)X0 = laser_ins.x_axis;
+	if(Y0!=laser_ins.y_axis)Y0 = laser_ins.y_axis;
+	Xm = X0;
+	Ym = Y0;
+  Xe = Xe - X0;
+  Ye = Ye - Y0;
+  NXY = (fabsf((float)Xe) + fabsf((float)Ye)) / STEP_LEN;
+
+  if(Xe > 0 && Ye >= 0) XOY = 1;
+  else if(Xe <= 0 && Ye > 0) XOY = 2;
+  else if(Xe < 0 && Ye <= 0) XOY = 3;
+  else if(Xe >= 0 && Ye < 0) XOY = 4;
+
+  while(NXY > 0)
+  {
+		if(!IFMOVING(stepper1.motor_state)&&!IFMOVING(stepper2.motor_state)){
+			switch (XOY)
+			{
+			case 1: (Fm >= 0) ? (Xm += STEP_LEN) : (Ym += STEP_LEN); break;
+			case 2: (Fm <  0) ? (Xm -= STEP_LEN) : (Ym += STEP_LEN); break;
+			case 3: (Fm >= 0) ? (Xm -= STEP_LEN) : (Ym -= STEP_LEN); break;
+			case 4: (Fm <  0) ? (Xm += STEP_LEN) : (Ym -= STEP_LEN); break;
+			default: break;
+			}
+			
+			NXY -= 1;
+			Fm = (Ym - Y0) * Xe - (Xm - X0) * Ye;
+			turn_coordinate((float)Xm,(float)Ym);
+		}
+	}	
 }
 
 
+/***** 底层 *****/
+void laser_init(laser *l,int x0,int y0){
+	l->x_axis = x0;
+	l->y_axis = y0;
+	l->x_cur = 0;
+	l->x_target = 0;
+	l->y_cur = 0;
+	l->y_target = 0;
+}
 
-/***** PID底层 *****/
+//设置激光点目标位置
+void laser_set_target(laser *l,int x,int y){
+	l->x_target = x;
+	l->y_target = y;
+}
+
+//使用PID逼近校正点
+int focus_calibration_point(laser *l){
+	static int count;
+	
+	//增量式PID
+	pid_incremental(&pid_stp1,laser_ins.x_target-cv_ins.laser_axis[0],15,-15);
+	pid_incremental(&pid_stp2,laser_ins.y_target-cv_ins.laser_axis[1],15,-15);
+	if(!IFMOVING(stepper1.motor_state))
+		StpDistanceSetBlocking(&stepper1,pid_stp1.output,200,100);
+	if(!IFMOVING(stepper2.motor_state))
+		StpDistanceSetBlocking(&stepper2,pid_stp2.output,200,100);
+	if(fabs(pid_stp1.err)<2&&fabs(pid_stp2.err)<2){
+		count++;
+	}
+	else count = 0;
+	if(count==30){
+		count = 0;
+		return OK;
+	}
+	return NOT_OK;
+}
+
 /**
  * @brief  重设PID参数
  * @param  *p PID结构体

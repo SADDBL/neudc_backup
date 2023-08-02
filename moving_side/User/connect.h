@@ -19,10 +19,17 @@ typedef struct UartRecieve
 } UartBuff;
 
 typedef struct{
-	int sp_F;	//等停和终点标志位
-	int line_err;	//巡线数据
-	int target_err_x,target_err_y;
+	int laser_axis[2];	//激光点坐标
+	int rectangular_axis[8];	//纸靶坐标
 }cv_data;
+
+typedef struct{
+	int stop_F;	//暂停标志位
+	int mission_select;
+	int set_pos;	//选择校正的点位1-5对应：原点：左上、右上、左下、右下
+	int set_pos_last;
+}hmi_data;
+
 #define BufLen 44 
 //陀螺仪数据结构体
 //接收数据使用DMA空闲中断
@@ -33,14 +40,8 @@ typedef struct JY901_DMA{
 	float wz_last;
 }JY901;
 
-extern UartBuff UartBuff_Ins1;
-extern cv_data cv_ins;
-extern JY901 jy901_ins;
-extern int state_val;
-extern UartBuff UartBuff_Ins;;
-extern int mission_select;
 void UartDateHandler(UartBuff *UartBuff1);
 void HMISends(char *buf1);
-void HMISendb(uint8_t k);
+//void HMISendb(uint8_t k);
 void get_yaw_az(JY901 *j);
 #endif

@@ -65,6 +65,8 @@ void Error_Handler(void);
 #define dir1_GPIO_Port GPIOA
 #define dir2_Pin GPIO_PIN_15
 #define dir2_GPIO_Port GPIOB
+#define Beep_Pin GPIO_PIN_8
+#define Beep_GPIO_Port GPIOA
 /* USER CODE BEGIN Private defines */
 
 /* USER CODE END Private defines */

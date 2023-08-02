@@ -38,3 +38,4 @@ moving_side\macro.o: ../Core/Inc/tim.h
 moving_side\macro.o: D:\keil3.5\ARM\ARMCC\Bin\..\include\math.h
 moving_side\macro.o: ..\User\connect.h
 moving_side\macro.o: D:\keil3.5\ARM\ARMCC\Bin\..\include\string.h
+moving_side\macro.o: ..\User\control.h

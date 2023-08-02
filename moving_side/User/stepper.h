@@ -79,7 +79,6 @@ typedef struct Stepper
 	float stepangle;	// 步距角
 	float TagAngV;		// 目标角速度
 	float AcceAng;		// 角加速度
-
 } Stepper;
 
 void Init_Stepper(Stepper *stp, GPIO_TypeDef *stpdir_gpio_port, uint16_t stpdir_gpio_pin,

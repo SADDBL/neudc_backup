@@ -1,18 +1,8 @@
 #include "connect.h"
 #include "usart.h"
 #include <stdio.h>
-cv_data cv_ins = {0,LINE_MID_DATA,OUT_RANGE,OUT_RANGE};
+#include "macro.h"
 
-/**
-  * @brief  向串口屏发送字符串
-  * @param  *buf1 字符串
-  * @retval None
-  */
-void HMISends(char *buf1){
-	int len = strlen(buf1);
-	HAL_UART_Transmit(&HMIUart,(uint8_t*)buf1,len,0xffff);
-	HMISendb(0xff);
-}
 
 /**
   * @brief  发送3个相同字节
@@ -27,7 +17,109 @@ void HMISendb(uint8_t k){
 	HAL_UART_Transmit(&HMIUart,str,3,0xffff);
 }
 
-UartBuff UartBuff_Ins;
+/**
+  * @brief  向串口屏发送字符串
+  * @param  *buf1 字符串
+  * @retval None
+  */
+void HMISends(char *buf1){
+	int len = strlen(buf1);
+	HAL_UART_Transmit(&HMIUart,(uint8_t*)buf1,len,0xffff);
+	HMISendb(0xff);
+}
+
+void HMIDateHandler(UartBuff *HMIIns){
+	if ((HMIIns->Flag != 0x81)&&(HMIIns->Flag != 0x80) && (HMIIns->Flag != 0xee))
+   {
+        if (HMIIns->Flag == 0x03)
+        {
+            /***** 定长度数据处理 *****/
+            if(HMIIns->Pointer<2){
+							HMIIns->Uart_Data[HMIIns->Pointer++] = HMIIns->Rxbuf;
+						}
+						if(HMIIns->Pointer==2){
+							if(HMIIns->Uart_Data[0]=='m'){
+								HMIIns->Flag = 0x80;
+							}
+							else HMIIns->Flag=0xee;
+						}
+            /*****  *****/
+
+        }
+				else if (HMIIns->Flag == 0x04)
+        {
+            /***** 定长度数据处理 *****/
+            if(HMIIns->Pointer<2){
+							HMIIns->Uart_Data[HMIIns->Pointer++] = HMIIns->Rxbuf;
+						}
+						if(HMIIns->Pointer==2){
+							if(HMIIns->Uart_Data[0]=='c'){
+								HMIIns->Flag = 0x81;
+							}
+							else HMIIns->Flag=0xee;
+						}
+            /*****  *****/
+
+        }
+        // 等待接收数据头
+        else
+        {
+            // 数据头判断，确定接收数据类型
+            if (HMIIns->Rxbuf == 'p')
+            {
+                HMIIns->Flag = 0x01;
+                //HMIIns->Uart_Data[HMIIns->Pointer++] = HMIIns->Rxbuf;
+            }
+						else if (HMIIns->Rxbuf == 's')
+            {
+                HMIIns->Flag = 0x02;
+                //HMIIns->Uart_Data[HMIIns->Pointer++] = HMIIns->Rxbuf;
+            }
+						else if (HMIIns->Rxbuf == 'm')
+            {
+                HMIIns->Flag = 0x03;
+                HMIIns->Uart_Data[HMIIns->Pointer++] = HMIIns->Rxbuf;
+            }
+						else if(HMIIns->Rxbuf == 'c'){
+							 HMIIns->Flag = 0x04;
+               HMIIns->Uart_Data[HMIIns->Pointer++] = HMIIns->Rxbuf;
+						}
+            else
+            {
+                HMIIns->Flag = 0xee;
+            }
+        }
+				//接收暂停指令
+				if(HMIIns->Flag == 0x01){
+					hmi_data_ins.stop_F = PAUSE;
+					HMIIns->Flag = 0x0e;
+					HMIIns->Pointer = 0;
+				}
+				//接收暂停指令
+				else if(HMIIns->Flag == 0x02){
+					hmi_data_ins.stop_F = RESTART;
+					HMIIns->Flag = 0x0e;
+					HMIIns->Pointer = 0;
+				}
+    }
+		//数据处理
+		if(HMIIns->Flag==0x80){
+			HMIIns->Flag = 0x0e;
+			HMIIns->Pointer = 0;
+			hmi_data_ins.mission_select = HMIIns->Uart_Data[1]-'0';
+		}
+		else if(HMIIns->Flag==0x81){
+			HMIIns->Flag = 0x0e;
+			HMIIns->Pointer = 0;
+			hmi_data_ins.set_pos = HMIIns->Uart_Data[1]-'0';
+		}
+		//故障处理
+		if(HMIIns->Flag==0xee){
+			HMIIns->Flag = 0x0e;
+			HMIIns->Pointer = 0;
+		}
+}
+
 void UartDateHandler(UartBuff *UartBuff1)
 {
     if ((UartBuff1->Flag != 0x80) && (UartBuff1->Flag != 0xee))
@@ -35,11 +127,11 @@ void UartDateHandler(UartBuff *UartBuff1)
         if (UartBuff1->Flag == 0x40)
         {
             /***** 定长度数据处理 *****/
-            if(UartBuff1->Pointer<13){
+            if(UartBuff1->Pointer<7){
 							UartBuff1->Uart_Data[UartBuff1->Pointer++] = UartBuff1->Rxbuf;
 						}
-						if(UartBuff1->Pointer==13){
-							if(UartBuff1->Uart_Data[5]=='x'&&UartBuff1->Uart_Data[9]=='y'){
+						if(UartBuff1->Pointer==7){
+							if(UartBuff1->Uart_Data[0]=='j'){
 								UartBuff1->Flag = 0x80;
 							}
 							else UartBuff1->Flag=0xee;
@@ -51,7 +143,7 @@ void UartDateHandler(UartBuff *UartBuff1)
         else
         {
             // 数据头判断，确定接收数据类型
-            if (UartBuff1->Rxbuf == 'f')
+            if (UartBuff1->Rxbuf == 'j')
             {
                 UartBuff1->Flag = 0x40;
                 UartBuff1->Uart_Data[UartBuff1->Pointer++] = UartBuff1->Rxbuf;
@@ -62,35 +154,32 @@ void UartDateHandler(UartBuff *UartBuff1)
             }
         }
     }
+		//数据处理
+		if(UartBuff1->Flag==0x80){
+			UartBuff1->Flag = 0x0e;
+			UartBuff1->Pointer = 0;
+			sscanf((char*)UartBuff1->Uart_Data,"j%3d%3d",&cv_ins.laser_axis[0],&(cv_ins.laser_axis[1]));
+		}
+		//故障处理
+		if(UartBuff1->Flag==0xee){
+			UartBuff1->Flag = 0x0e;
+			UartBuff1->Pointer = 0;
+		}
 }
 
-UartBuff UartBuff_Ins1;
-int mission_select;
+
+
+
 // 串口回调函数模板
 void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
 {
-		if(huart->Instance == USART2){
-			if(UartBuff_Ins1.Flag==0x01){
-				mission_select = UartBuff_Ins1.Rxbuf-'0';
-				UartBuff_Ins1.Flag=0x00;
-			}
-			else if(UartBuff_Ins1.Flag==0x02){
-				if(UartBuff_Ins1.Pointer<4){
-					UartBuff_Ins1.Uart_Data[UartBuff_Ins1.Pointer++] = UartBuff_Ins1.Rxbuf;
-				}
-				if(UartBuff_Ins1.Pointer==4){
-					
-				}
-			}
-			else {
-				if(UartBuff_Ins1.Rxbuf == 'm'){
-					UartBuff_Ins1.Flag = 0x01;
-				}
-				else if(UartBuff_Ins1.Rxbuf == 's'){
-					UartBuff_Ins1.Flag = 0x02;
-				}
-			}
-			HAL_UART_Receive_IT(&huart2, &(UartBuff_Ins1.Rxbuf), 1);
+		if(huart->Instance == USART1){
+			UartDateHandler(&uart_ins1);
+			HAL_UART_Receive_IT(&huart1, &(uart_ins1.Rxbuf), 1);
+		}
+		else if(huart->Instance == USART2){
+			HMIDateHandler(&uart_ins2);
+			HAL_UART_Receive_IT(&huart2, &(uart_ins2.Rxbuf), 1);
 		}
 }
 
