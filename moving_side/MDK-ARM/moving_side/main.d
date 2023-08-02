@@ -35,3 +35,10 @@ moving_side\main.o: ../Drivers/STM32G4xx_HAL_Driver/Inc/stm32g4xx_hal_uart_ex.h
 moving_side\main.o: ../Core/Inc/tim.h
 moving_side\main.o: ../Core/Inc/usart.h
 moving_side\main.o: ../Core/Inc/gpio.h
+moving_side\main.o: D:\keil3.5\ARM\ARMCC\Bin\..\include\stdio.h
+moving_side\main.o: ../User/stepper.h
+moving_side\main.o: D:\keil3.5\ARM\ARMCC\Bin\..\include\math.h
+moving_side\main.o: ../User/macro.h
+moving_side\main.o: ../User/connect.h
+moving_side\main.o: D:\keil3.5\ARM\ARMCC\Bin\..\include\string.h
+moving_side\main.o: ../User/control.h

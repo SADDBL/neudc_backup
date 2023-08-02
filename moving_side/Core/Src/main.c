@@ -24,7 +24,11 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-
+#include <stdio.h>
+#include "stepper.h"
+#include "macro.h"
+#include "control.h"
+#include "connect.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -50,7 +54,11 @@
 /* Private function prototypes -----------------------------------------------*/
 void SystemClock_Config(void);
 /* USER CODE BEGIN PFP */
-
+int fputc(int ch, FILE *f)
+{
+	HAL_UART_Transmit(&huart1,(uint8_t*)&ch,1,10);
+	return ch;
+}
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
@@ -91,7 +99,13 @@ int main(void)
   MX_USART1_UART_Init();
   MX_USART2_UART_Init();
   /* USER CODE BEGIN 2 */
-
+	HAL_TIM_Base_Start_IT(&htim4);
+	HAL_TIM_OC_Start_IT(&htim4,TIM_CHANNEL_1);
+	HAL_TIM_OC_Start_IT(&htim4,TIM_CHANNEL_2);
+	HAL_UART_Receive_IT(&huart1,&(uart_ins1.Rxbuf),1);
+	
+	Init_Stepper(&stepper1,dir1_GPIO_Port,dir1_Pin,&htim2,TIM_CHANNEL_1,0.1125f);
+	Init_Stepper(&stepper2,dir2_GPIO_Port,dir2_Pin,&htim2,TIM_CHANNEL_2,0.1125f);
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -152,7 +166,17 @@ void SystemClock_Config(void)
 }
 
 /* USER CODE BEGIN 4 */
-
+void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim){
+	static int i=  0;
+	if(htim->Instance==TIM4){
+		i++;
+		if(i==100){
+			i = 0;
+			HAL_GPIO_TogglePin(GPIOC,GPIO_PIN_13);
+		}
+	}
+	
+}
 /* USER CODE END 4 */
 
 /**
