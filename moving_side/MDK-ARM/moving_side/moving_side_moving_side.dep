@@ -1,7 +1,7 @@
 Dependencies for Project 'moving_side', Target 'moving_side': (DO NOT MODIFY !)
 CompilerVersion: 5060960::V5.06 update 7 (build 960)::.\ARMCC
 F (startup_stm32g431xx.s)(0x64CA5B2D)(--cpu Cortex-M4.fp.sp -g --apcs=interwork --pd "__MICROLIB SETA 1"-I.\RTE\_moving_side-ID:\keil3.5\ARM\CMSIS\5.8.0\CMSIS\Core\Include-ID:\keil3.5\Keil\STM32G4xx_DFP\1.5.0\Drivers\CMSIS\Device\ST\STM32G4xx\Include--pd "__UVISION_VERSION SETA 536" --pd "_RTE_ SETA 1" --pd "STM32G431xx SETA 1" --pd "_RTE_ SETA 1"--list startup_stm32g431xx.lst --xref -o moving_side\startup_stm32g431xx.o --depend moving_side\startup_stm32g431xx.d)
-F (../Core/Src/main.c)(0x64CA60DA)(--c99 -c --cpu Cortex-M4.fp.sp -D__MICROLIB -g -O3 --apcs=interwork --split_sections -I ../Core/Inc -I ../Drivers/STM32G4xx_HAL_Driver/Inc -I ../Drivers/STM32G4xx_HAL_Driver/Inc/Legacy -I ../Drivers/CMSIS/Device/ST/STM32G4xx/Include -I ../Drivers/CMSIS/Include -I ../User-I.\RTE\_moving_side-ID:\keil3.5\ARM\CMSIS\5.8.0\CMSIS\Core\Include-ID:\keil3.5\Keil\STM32G4xx_DFP\1.5.0\Drivers\CMSIS\Device\ST\STM32G4xx\Include-D__UVISION_VERSION="536" -D_RTE_ -DSTM32G431xx -D_RTE_ -DUSE_HAL_DRIVER -DSTM32G431xx-o moving_side\main.o --omf_browse moving_side\main.crf --depend moving_side\main.d)
+F (../Core/Src/main.c)(0x64CB215F)(--c99 -c --cpu Cortex-M4.fp.sp -D__MICROLIB -g -O3 --apcs=interwork --split_sections -I ../Core/Inc -I ../Drivers/STM32G4xx_HAL_Driver/Inc -I ../Drivers/STM32G4xx_HAL_Driver/Inc/Legacy -I ../Drivers/CMSIS/Device/ST/STM32G4xx/Include -I ../Drivers/CMSIS/Include -I ../User-I.\RTE\_moving_side-ID:\keil3.5\ARM\CMSIS\5.8.0\CMSIS\Core\Include-ID:\keil3.5\Keil\STM32G4xx_DFP\1.5.0\Drivers\CMSIS\Device\ST\STM32G4xx\Include-D__UVISION_VERSION="536" -D_RTE_ -DSTM32G431xx -D_RTE_ -DUSE_HAL_DRIVER -DSTM32G431xx-o moving_side\main.o --omf_browse moving_side\main.crf --depend moving_side\main.d)
 I (../Core/Inc/main.h)(0x64CA5B2A)
 I (../Drivers/STM32G4xx_HAL_Driver/Inc/stm32g4xx_hal.h)(0x644A421B)
 I (../Core/Inc/stm32g4xx_hal_conf.h)(0x64CA5B2A)
@@ -40,10 +40,10 @@ I (../Core/Inc/gpio.h)(0x64C9A618)
 I (D:\keil3.5\ARM\ARMCC\include\stdio.h)(0x60252374)
 I (../User/stepper.h)(0x64CA3021)
 I (D:\keil3.5\ARM\ARMCC\include\math.h)(0x60252378)
-I (../User/macro.h)(0x64CA47F5)
+I (../User/macro.h)(0x64CB20F9)
 I (../User/connect.h)(0x64CA3E4F)
 I (D:\keil3.5\ARM\ARMCC\include\string.h)(0x6025237E)
-I (../User/control.h)(0x64CA405D)
+I (../User/control.h)(0x64CB201D)
 F (../Core/Src/gpio.c)(0x64CA5B29)(--c99 -c --cpu Cortex-M4.fp.sp -D__MICROLIB -g -O3 --apcs=interwork --split_sections -I ../Core/Inc -I ../Drivers/STM32G4xx_HAL_Driver/Inc -I ../Drivers/STM32G4xx_HAL_Driver/Inc/Legacy -I ../Drivers/CMSIS/Device/ST/STM32G4xx/Include -I ../Drivers/CMSIS/Include -I ../User-I.\RTE\_moving_side-ID:\keil3.5\ARM\CMSIS\5.8.0\CMSIS\Core\Include-ID:\keil3.5\Keil\STM32G4xx_DFP\1.5.0\Drivers\CMSIS\Device\ST\STM32G4xx\Include-D__UVISION_VERSION="536" -D_RTE_ -DSTM32G431xx -D_RTE_ -DUSE_HAL_DRIVER -DSTM32G431xx-o moving_side\gpio.o --omf_browse moving_side\gpio.crf --depend moving_side\gpio.d)
 I (../Core/Inc/gpio.h)(0x64C9A618)
 I (../Core/Inc/main.h)(0x64CA5B2A)
@@ -826,54 +826,12 @@ I (../Drivers/STM32G4xx_HAL_Driver/Inc/stm32g4xx_hal_uart_ex.h)(0x644A421B)
 I (D:\keil3.5\ARM\ARMCC\include\string.h)(0x6025237E)
 I (../Core/Inc/usart.h)(0x64C9A619)
 I (D:\keil3.5\ARM\ARMCC\include\stdio.h)(0x60252374)
-I (..\User\macro.h)(0x64CA47F5)
+I (..\User\macro.h)(0x64CB20F9)
 I (..\User\stepper.h)(0x64CA3021)
 I (../Core/Inc/tim.h)(0x64C9A619)
 I (D:\keil3.5\ARM\ARMCC\include\math.h)(0x60252378)
-I (..\User\control.h)(0x64CA405D)
-F (..\User\stepper.c)(0x64CA5AD8)(--c99 -c --cpu Cortex-M4.fp.sp -D__MICROLIB -g -O3 --apcs=interwork --split_sections -I ../Core/Inc -I ../Drivers/STM32G4xx_HAL_Driver/Inc -I ../Drivers/STM32G4xx_HAL_Driver/Inc/Legacy -I ../Drivers/CMSIS/Device/ST/STM32G4xx/Include -I ../Drivers/CMSIS/Include -I ../User-I.\RTE\_moving_side-ID:\keil3.5\ARM\CMSIS\5.8.0\CMSIS\Core\Include-ID:\keil3.5\Keil\STM32G4xx_DFP\1.5.0\Drivers\CMSIS\Device\ST\STM32G4xx\Include-D__UVISION_VERSION="536" -D_RTE_ -DSTM32G431xx -D_RTE_ -DUSE_HAL_DRIVER -DSTM32G431xx-o moving_side\stepper.o --omf_browse moving_side\stepper.crf --depend moving_side\stepper.d)
-I (..\User\stepper.h)(0x64CA3021)
-I (../Core/Inc/main.h)(0x64CA5B2A)
-I (../Drivers/STM32G4xx_HAL_Driver/Inc/stm32g4xx_hal.h)(0x644A421B)
-I (../Core/Inc/stm32g4xx_hal_conf.h)(0x64CA5B2A)
-I (../Drivers/STM32G4xx_HAL_Driver/Inc/stm32g4xx_hal_rcc.h)(0x644A421B)
-I (../Drivers/STM32G4xx_HAL_Driver/Inc/stm32g4xx_hal_def.h)(0x644A421B)
-I (../Drivers/CMSIS/Device/ST/STM32G4xx/Include/stm32g4xx.h)(0x644A4218)
-I (../Drivers/CMSIS/Device/ST/STM32G4xx/Include/stm32g431xx.h)(0x644A4218)
-I (../Drivers/CMSIS/Include/core_cm4.h)(0x644A421B)
-I (D:\keil3.5\ARM\ARMCC\include\stdint.h)(0x6025237E)
-I (../Drivers/CMSIS/Include/cmsis_version.h)(0x644A421B)
-I (../Drivers/CMSIS/Include/cmsis_compiler.h)(0x644A421B)
-I (../Drivers/CMSIS/Include/cmsis_armcc.h)(0x644A421B)
-I (../Drivers/CMSIS/Include/mpu_armv7.h)(0x644A421B)
-I (../Drivers/CMSIS/Device/ST/STM32G4xx/Include/system_stm32g4xx.h)(0x644A4218)
-I (../Drivers/STM32G4xx_HAL_Driver/Inc/Legacy/stm32_hal_legacy.h)(0x644A421B)
-I (D:\keil3.5\ARM\ARMCC\include\stddef.h)(0x6025237E)
-I (../Drivers/STM32G4xx_HAL_Driver/Inc/stm32g4xx_hal_rcc_ex.h)(0x644A421B)
-I (../Drivers/STM32G4xx_HAL_Driver/Inc/stm32g4xx_hal_gpio.h)(0x644A421B)
-I (../Drivers/STM32G4xx_HAL_Driver/Inc/stm32g4xx_hal_gpio_ex.h)(0x644A421B)
-I (../Drivers/STM32G4xx_HAL_Driver/Inc/stm32g4xx_hal_dma.h)(0x644A421B)
-I (../Drivers/STM32G4xx_HAL_Driver/Inc/stm32g4xx_hal_dma_ex.h)(0x644A421B)
-I (../Drivers/STM32G4xx_HAL_Driver/Inc/stm32g4xx_hal_cortex.h)(0x644A421B)
-I (../Drivers/STM32G4xx_HAL_Driver/Inc/stm32g4xx_hal_exti.h)(0x644A421B)
-I (../Drivers/STM32G4xx_HAL_Driver/Inc/stm32g4xx_hal_flash.h)(0x644A421B)
-I (../Drivers/STM32G4xx_HAL_Driver/Inc/stm32g4xx_hal_flash_ex.h)(0x644A421B)
-I (../Drivers/STM32G4xx_HAL_Driver/Inc/stm32g4xx_hal_flash_ramfunc.h)(0x644A421B)
-I (../Drivers/STM32G4xx_HAL_Driver/Inc/stm32g4xx_hal_pwr.h)(0x644A421B)
-I (../Drivers/STM32G4xx_HAL_Driver/Inc/stm32g4xx_hal_pwr_ex.h)(0x644A421B)
-I (../Drivers/STM32G4xx_HAL_Driver/Inc/stm32g4xx_hal_tim.h)(0x644A421B)
-I (../Drivers/STM32G4xx_HAL_Driver/Inc/stm32g4xx_hal_tim_ex.h)(0x644A421B)
-I (../Drivers/STM32G4xx_HAL_Driver/Inc/stm32g4xx_hal_uart.h)(0x644A421B)
-I (../Drivers/STM32G4xx_HAL_Driver/Inc/stm32g4xx_hal_uart_ex.h)(0x644A421B)
-I (../Core/Inc/tim.h)(0x64C9A619)
-I (D:\keil3.5\ARM\ARMCC\include\math.h)(0x60252378)
-I (..\User\macro.h)(0x64CA47F5)
-I (..\User\connect.h)(0x64CA3E4F)
-I (D:\keil3.5\ARM\ARMCC\include\string.h)(0x6025237E)
-I (..\User\control.h)(0x64CA405D)
-F (..\User\macro.h)(0x64CA47F5)()
-F (..\User\macro.c)(0x64CA51EE)(--c99 -c --cpu Cortex-M4.fp.sp -D__MICROLIB -g -O3 --apcs=interwork --split_sections -I ../Core/Inc -I ../Drivers/STM32G4xx_HAL_Driver/Inc -I ../Drivers/STM32G4xx_HAL_Driver/Inc/Legacy -I ../Drivers/CMSIS/Device/ST/STM32G4xx/Include -I ../Drivers/CMSIS/Include -I ../User-I.\RTE\_moving_side-ID:\keil3.5\ARM\CMSIS\5.8.0\CMSIS\Core\Include-ID:\keil3.5\Keil\STM32G4xx_DFP\1.5.0\Drivers\CMSIS\Device\ST\STM32G4xx\Include-D__UVISION_VERSION="536" -D_RTE_ -DSTM32G431xx -D_RTE_ -DUSE_HAL_DRIVER -DSTM32G431xx-o moving_side\macro.o --omf_browse moving_side\macro.crf --depend moving_side\macro.d)
-I (..\User\macro.h)(0x64CA47F5)
+I (..\User\control.h)(0x64CB201D)
+F (..\User\stepper.c)(0x64CAFA62)(--c99 -c --cpu Cortex-M4.fp.sp -D__MICROLIB -g -O3 --apcs=interwork --split_sections -I ../Core/Inc -I ../Drivers/STM32G4xx_HAL_Driver/Inc -I ../Drivers/STM32G4xx_HAL_Driver/Inc/Legacy -I ../Drivers/CMSIS/Device/ST/STM32G4xx/Include -I ../Drivers/CMSIS/Include -I ../User-I.\RTE\_moving_side-ID:\keil3.5\ARM\CMSIS\5.8.0\CMSIS\Core\Include-ID:\keil3.5\Keil\STM32G4xx_DFP\1.5.0\Drivers\CMSIS\Device\ST\STM32G4xx\Include-D__UVISION_VERSION="536" -D_RTE_ -DSTM32G431xx -D_RTE_ -DUSE_HAL_DRIVER -DSTM32G431xx-o moving_side\stepper.o --omf_browse moving_side\stepper.crf --depend moving_side\stepper.d)
 I (..\User\stepper.h)(0x64CA3021)
 I (../Core/Inc/main.h)(0x64CA5B2A)
 I (../Drivers/STM32G4xx_HAL_Driver/Inc/stm32g4xx_hal.h)(0x644A421B)
@@ -909,12 +867,54 @@ I (../Drivers/STM32G4xx_HAL_Driver/Inc/stm32g4xx_hal_uart.h)(0x644A421B)
 I (../Drivers/STM32G4xx_HAL_Driver/Inc/stm32g4xx_hal_uart_ex.h)(0x644A421B)
 I (../Core/Inc/tim.h)(0x64C9A619)
 I (D:\keil3.5\ARM\ARMCC\include\math.h)(0x60252378)
+I (..\User\macro.h)(0x64CB20F9)
 I (..\User\connect.h)(0x64CA3E4F)
 I (D:\keil3.5\ARM\ARMCC\include\string.h)(0x6025237E)
-I (..\User\control.h)(0x64CA405D)
-F (..\User\control .c)(0x64CA6061)(--c99 -c --cpu Cortex-M4.fp.sp -D__MICROLIB -g -O3 --apcs=interwork --split_sections -I ../Core/Inc -I ../Drivers/STM32G4xx_HAL_Driver/Inc -I ../Drivers/STM32G4xx_HAL_Driver/Inc/Legacy -I ../Drivers/CMSIS/Device/ST/STM32G4xx/Include -I ../Drivers/CMSIS/Include -I ../User-I.\RTE\_moving_side-ID:\keil3.5\ARM\CMSIS\5.8.0\CMSIS\Core\Include-ID:\keil3.5\Keil\STM32G4xx_DFP\1.5.0\Drivers\CMSIS\Device\ST\STM32G4xx\Include-D__UVISION_VERSION="536" -D_RTE_ -DSTM32G431xx -D_RTE_ -DUSE_HAL_DRIVER -DSTM32G431xx-o "moving_side\control .o" --omf_browse "moving_side\control .crf" --depend "moving_side\control .d")
-I (..\User\control.h)(0x64CA405D)
-I (..\User\macro.h)(0x64CA47F5)
+I (..\User\control.h)(0x64CB201D)
+F (..\User\macro.h)(0x64CB20F9)()
+F (..\User\macro.c)(0x64CB129F)(--c99 -c --cpu Cortex-M4.fp.sp -D__MICROLIB -g -O3 --apcs=interwork --split_sections -I ../Core/Inc -I ../Drivers/STM32G4xx_HAL_Driver/Inc -I ../Drivers/STM32G4xx_HAL_Driver/Inc/Legacy -I ../Drivers/CMSIS/Device/ST/STM32G4xx/Include -I ../Drivers/CMSIS/Include -I ../User-I.\RTE\_moving_side-ID:\keil3.5\ARM\CMSIS\5.8.0\CMSIS\Core\Include-ID:\keil3.5\Keil\STM32G4xx_DFP\1.5.0\Drivers\CMSIS\Device\ST\STM32G4xx\Include-D__UVISION_VERSION="536" -D_RTE_ -DSTM32G431xx -D_RTE_ -DUSE_HAL_DRIVER -DSTM32G431xx-o moving_side\macro.o --omf_browse moving_side\macro.crf --depend moving_side\macro.d)
+I (..\User\macro.h)(0x64CB20F9)
+I (..\User\stepper.h)(0x64CA3021)
+I (../Core/Inc/main.h)(0x64CA5B2A)
+I (../Drivers/STM32G4xx_HAL_Driver/Inc/stm32g4xx_hal.h)(0x644A421B)
+I (../Core/Inc/stm32g4xx_hal_conf.h)(0x64CA5B2A)
+I (../Drivers/STM32G4xx_HAL_Driver/Inc/stm32g4xx_hal_rcc.h)(0x644A421B)
+I (../Drivers/STM32G4xx_HAL_Driver/Inc/stm32g4xx_hal_def.h)(0x644A421B)
+I (../Drivers/CMSIS/Device/ST/STM32G4xx/Include/stm32g4xx.h)(0x644A4218)
+I (../Drivers/CMSIS/Device/ST/STM32G4xx/Include/stm32g431xx.h)(0x644A4218)
+I (../Drivers/CMSIS/Include/core_cm4.h)(0x644A421B)
+I (D:\keil3.5\ARM\ARMCC\include\stdint.h)(0x6025237E)
+I (../Drivers/CMSIS/Include/cmsis_version.h)(0x644A421B)
+I (../Drivers/CMSIS/Include/cmsis_compiler.h)(0x644A421B)
+I (../Drivers/CMSIS/Include/cmsis_armcc.h)(0x644A421B)
+I (../Drivers/CMSIS/Include/mpu_armv7.h)(0x644A421B)
+I (../Drivers/CMSIS/Device/ST/STM32G4xx/Include/system_stm32g4xx.h)(0x644A4218)
+I (../Drivers/STM32G4xx_HAL_Driver/Inc/Legacy/stm32_hal_legacy.h)(0x644A421B)
+I (D:\keil3.5\ARM\ARMCC\include\stddef.h)(0x6025237E)
+I (../Drivers/STM32G4xx_HAL_Driver/Inc/stm32g4xx_hal_rcc_ex.h)(0x644A421B)
+I (../Drivers/STM32G4xx_HAL_Driver/Inc/stm32g4xx_hal_gpio.h)(0x644A421B)
+I (../Drivers/STM32G4xx_HAL_Driver/Inc/stm32g4xx_hal_gpio_ex.h)(0x644A421B)
+I (../Drivers/STM32G4xx_HAL_Driver/Inc/stm32g4xx_hal_dma.h)(0x644A421B)
+I (../Drivers/STM32G4xx_HAL_Driver/Inc/stm32g4xx_hal_dma_ex.h)(0x644A421B)
+I (../Drivers/STM32G4xx_HAL_Driver/Inc/stm32g4xx_hal_cortex.h)(0x644A421B)
+I (../Drivers/STM32G4xx_HAL_Driver/Inc/stm32g4xx_hal_exti.h)(0x644A421B)
+I (../Drivers/STM32G4xx_HAL_Driver/Inc/stm32g4xx_hal_flash.h)(0x644A421B)
+I (../Drivers/STM32G4xx_HAL_Driver/Inc/stm32g4xx_hal_flash_ex.h)(0x644A421B)
+I (../Drivers/STM32G4xx_HAL_Driver/Inc/stm32g4xx_hal_flash_ramfunc.h)(0x644A421B)
+I (../Drivers/STM32G4xx_HAL_Driver/Inc/stm32g4xx_hal_pwr.h)(0x644A421B)
+I (../Drivers/STM32G4xx_HAL_Driver/Inc/stm32g4xx_hal_pwr_ex.h)(0x644A421B)
+I (../Drivers/STM32G4xx_HAL_Driver/Inc/stm32g4xx_hal_tim.h)(0x644A421B)
+I (../Drivers/STM32G4xx_HAL_Driver/Inc/stm32g4xx_hal_tim_ex.h)(0x644A421B)
+I (../Drivers/STM32G4xx_HAL_Driver/Inc/stm32g4xx_hal_uart.h)(0x644A421B)
+I (../Drivers/STM32G4xx_HAL_Driver/Inc/stm32g4xx_hal_uart_ex.h)(0x644A421B)
+I (../Core/Inc/tim.h)(0x64C9A619)
+I (D:\keil3.5\ARM\ARMCC\include\math.h)(0x60252378)
+I (..\User\connect.h)(0x64CA3E4F)
+I (D:\keil3.5\ARM\ARMCC\include\string.h)(0x6025237E)
+I (..\User\control.h)(0x64CB201D)
+F (..\User\control .c)(0x64CB204A)(--c99 -c --cpu Cortex-M4.fp.sp -D__MICROLIB -g -O3 --apcs=interwork --split_sections -I ../Core/Inc -I ../Drivers/STM32G4xx_HAL_Driver/Inc -I ../Drivers/STM32G4xx_HAL_Driver/Inc/Legacy -I ../Drivers/CMSIS/Device/ST/STM32G4xx/Include -I ../Drivers/CMSIS/Include -I ../User-I.\RTE\_moving_side-ID:\keil3.5\ARM\CMSIS\5.8.0\CMSIS\Core\Include-ID:\keil3.5\Keil\STM32G4xx_DFP\1.5.0\Drivers\CMSIS\Device\ST\STM32G4xx\Include-D__UVISION_VERSION="536" -D_RTE_ -DSTM32G431xx -D_RTE_ -DUSE_HAL_DRIVER -DSTM32G431xx-o "moving_side\control .o" --omf_browse "moving_side\control .crf" --depend "moving_side\control .d")
+I (..\User\control.h)(0x64CB201D)
+I (..\User\macro.h)(0x64CB20F9)
 I (..\User\stepper.h)(0x64CA3021)
 I (../Core/Inc/main.h)(0x64CA5B2A)
 I (../Drivers/STM32G4xx_HAL_Driver/Inc/stm32g4xx_hal.h)(0x644A421B)

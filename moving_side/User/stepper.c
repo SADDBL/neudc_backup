@@ -831,10 +831,10 @@ void StepperInOC(Stepper *stp)
 	if (stp->CC_FLAG)
 	{
 		Stepper_Handler(stp);
-		stp->CCR_ValSetter = (Tim_Period - 70);//stp->period_now + PulseWide_Negetive);
+		stp->CCR_ValSetter = (Tim_Period - stp->TagAngV);//stp->period_now + PulseWide_Negetive);
 		if (Comparenow < stp->CCR_ValSetter)
 		{
-			__HAL_TIM_SET_COMPARE(stp->StpTim, stp->StpChannel, Comparenow + 70);//(stp->period_now - PulseWide_Negetive));
+			__HAL_TIM_SET_COMPARE(stp->StpTim, stp->StpChannel, Comparenow + stp->TagAngV);//(stp->period_now - PulseWide_Negetive));
 		}
 		else
 		{

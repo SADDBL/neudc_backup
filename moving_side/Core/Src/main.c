@@ -105,14 +105,26 @@ int main(void)
 	HAL_UART_Receive_IT(&huart1,&(uart_ins1.Rxbuf),1);
 	HAL_UART_Receive_IT(&huart2,&(uart_ins2.Rxbuf),1);
 	
-	Init_Stepper(&stepper1,dir1_GPIO_Port,dir1_Pin,&htim2,TIM_CHANNEL_1,0.1125f);
-	Init_Stepper(&stepper2,dir2_GPIO_Port,dir2_Pin,&htim2,TIM_CHANNEL_2,0.1125f);
+	Init_Stepper(&stepper1,dir1_GPIO_Port,dir1_Pin,&htim2,TIM_CHANNEL_1,0.05625f);
+	Init_Stepper(&stepper2,dir2_GPIO_Port,dir2_Pin,&htim2,TIM_CHANNEL_2,0.05625f);
 	
 	laser_init(&laser_ins,0,0);
-	//StpDistanceSetBlocking(&stepper1,-360,200,100);
-	drawline(0,0,1000,0);
+	
+	float kp_stp1=0,ki_stp1=0,kd_stp1=0;
+	float kp_stp2=0,ki_stp2=0,kd_stp2=0;
+	Laser_On;
+	pid_init(&pid_stp1,kp_stp1,ki_stp1,kd_stp1);
+	pid_init(&pid_stp2,kp_stp2,ki_stp2,kd_stp2);
+//	drawline(0,0,500,500,30);
+	StpDistanceSetBlocking(&stepper2,90,1000,100);
+//	StpDistanceSetBlocking(&stepper2,-50,1000,500);
+//	drawline(0,0,0,200,500);
 	HAL_Delay(1000);
-	//drawline(0,-1000,0,-500);
+//	drawline(200,0,200,200);
+	HAL_Delay(1000);
+//	drawline(-200,200,-200,0);
+//	HAL_Delay(1000);
+//	drawline(-200,0,0,0);
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -174,12 +186,10 @@ void SystemClock_Config(void)
 
 /* USER CODE BEGIN 4 */
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim){
-	static int i=  0;
 	if(htim->Instance==TIM4){
-		i++;
-		if(i==100){
-			i = 0;
-			HAL_GPIO_TogglePin(GPIOC,GPIO_PIN_13);
+		if(PID_F==PID_START){
+			pid_incremental(&pid_stp1,laser_ins.x_target-cv_ins.laser_axis[0],15,-15);
+			pid_incremental(&pid_stp2,laser_ins.y_target-cv_ins.laser_axis[1],15,-15);
 		}
 	}
 	

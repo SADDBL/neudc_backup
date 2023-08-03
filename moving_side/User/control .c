@@ -5,9 +5,121 @@
 
 
 /************************** LYF Start ************************/
+/***** 顶层 *****/
+//任务二，沿边线走
+void mission2(void){
+	static int state_val,count,i,j,exit = NOT_OK;
+	while(1){
+		switch(state_val){
+			case 0:{
+				count++;
+				if(count==30){
+					state_val++;
+					Laser_On;
+				}
+				break;
+			}
+			case 1:{
+				drawline(laser_ins.x_axis,laser_ins.y_axis,mission2_point_list[0],mission2_point_list[1],50);
+				for(i=0;i<20;i++)
+					for(j=0;j<1000;j++);
+				state_val++;
+				break;
+			}
+			case 2:{
+				drawline(laser_ins.x_axis,laser_ins.y_axis,mission2_point_list[2],mission2_point_list[3],50);
+				for(i=0;i<20;i++)
+					for(j=0;j<1000;j++);
+				state_val++;
+				break;
+			}
+			case 3:{
+				drawline(laser_ins.x_axis,laser_ins.y_axis,mission2_point_list[4],mission2_point_list[5],50);
+				for(i=0;i<20;i++)
+					for(j=0;j<1000;j++);
+				state_val++;
+				break;
+			}
+			case 4:{
+				drawline(laser_ins.x_axis,laser_ins.y_axis,mission2_point_list[6],mission2_point_list[7],50);
+				for(i=0;i<20;i++)
+					for(j=0;j<1000;j++);
+				state_val++;
+				break;
+			}
+			case 5:{
+				exit = OK;
+				break;
+			}
+		}
+		
+		if(exit==OK){
+			hmi_data_ins.mission_select = 0;
+			state_val=0;
+			break;
+		}
+	}
+}
+
+//任务三、四，沿纸靶走
+void mission3(void){
+	static int state_val,count,i,j,exit = NOT_OK;
+	while(1){
+		switch(state_val){
+			case 0:{
+				count++;
+				if(count==30){
+					state_val++;
+					Laser_On;
+				}
+				break;
+			}
+			case 1:{
+				
+				drawline(laser_ins.x_axis,laser_ins.y_axis,cv_ins.rectangular_axis[0],cv_ins.rectangular_axis[1],50);
+				for(i=0;i<20;i++)
+					for(j=0;j<1000;j++);
+				state_val++;
+				break;
+			}
+			case 2:{
+				drawline(laser_ins.x_axis,laser_ins.y_axis,cv_ins.rectangular_axis[2],cv_ins.rectangular_axis[3],50);
+				for(i=0;i<20;i++)
+					for(j=0;j<1000;j++);
+				state_val++;
+				break;
+			}
+			case 3:{
+				drawline(laser_ins.x_axis,laser_ins.y_axis,cv_ins.rectangular_axis[4],cv_ins.rectangular_axis[5],50);
+				for(i=0;i<20;i++)
+					for(j=0;j<1000;j++);
+				state_val++;
+				break;
+			}
+			case 4:{
+				drawline(laser_ins.x_axis,laser_ins.y_axis,cv_ins.rectangular_axis[6],mission2_point_list[7],50);
+				for(i=0;i<20;i++)
+					for(j=0;j<1000;j++);
+				state_val++;
+				break;
+			}
+			case 5:{
+				exit = OK;
+				break;
+			}
+		}
+		
+		if(exit==OK){
+			hmi_data_ins.mission_select = 0;
+			state_val=0;
+			break;
+		}
+	}
+}
+
 /*
- * @brief：转到插补目标左边
- * @param：x，y	目标左边
+ * @brief：校正屏幕位置
+ * @param：None
  * @return： 无
    */
 void calibration(void){
@@ -48,8 +160,34 @@ void calibration(void){
 				break;
 			}
 		}
-		if(exit==OK) break;
+		if(exit==OK){
+			hmi_data_ins.mission_select = 0;
+			break;
+			state_val=0;
+		}
 	}
+}
+
+void reset2origin(void){
+	
+}
+
+
+/*
+ * @brief：激光点打在屏幕原点时，计算屏幕坐标系的原点（即电机与屏幕垂直时激光点坐标）
+ * @param：None
+ * @return：None
+   */
+void set_origin(void){
+	float x0,y0,sqx,temp;
+	temp = tanf(-stepper1.position_ctnow*D_ANG);
+	sqx = L*L*(1+temp*temp);
+	sqx = sqrtf(sqx);
+	x0 = laser_ins.x_axis + L*temp;
+	y0 = laser_ins.y_axis - sqx*tanf(-stepper2.position_ctnow*D_ANG);
+	
+	laser_ins.x0 = x0;
+	laser_ins.y0 = y0;
 }
 	
 
@@ -59,7 +197,7 @@ void calibration(void){
  * @param：x，y	目标坐标
  * @return： 无
    */
-void turn_coordinate(float x, float y)
+void turn_coordinate(float x, float y,float tar_v)
 {
   float angle_x, angle_y;
   float d_angx, d_angy;
@@ -71,15 +209,15 @@ void turn_coordinate(float x, float y)
   angle_y = atan(y / sqx) * 180 / PI;
 	
 	//计算需要转过的角度
-	d_angx = angle_x - stepper1.position_ctnow*0.1125f;
-	d_angy = angle_y - stepper2.position_ctnow*0.1125f;
+	d_angx = angle_x - stepper1.position_ctnow*stepper1.stepangle;
+	d_angy = angle_y - stepper2.position_ctnow*stepper1.stepangle;
 	
-	if(fabs(d_angx)>0.1125f){
-		StpDistanceSetBlocking(&stepper1,d_angx,150,80);
+	if(fabs(d_angx)>stepper1.stepangle){
+		StpDistanceSetBlocking(&stepper1,d_angx,500,tar_v);
 		laser_ins.x_axis = x;
 		}
-	if(fabs(d_angy)>0.1125f){
-		StpDistanceSetBlocking(&stepper2,d_angy,150,80);
+	if(fabs(d_angy)>stepper1.stepangle){
+		StpDistanceSetBlocking(&stepper2,d_angy,500,tar_v);
 		laser_ins.y_axis = y;
 	}
 }
@@ -87,9 +225,10 @@ void turn_coordinate(float x, float y)
 /*
  * @brief：直线运动插补
  * @param：起点坐标（X0, Y0），终点坐标（Xe, Ye）
+ * @param：tar_v	调节电机速度，数字越大越慢，若只移动一个轴，数字尽量给大，500速度适中
  * @return： 无
    */
-void drawline(int X0,int Y0,int Xe,int Ye){
+void drawline(int X0,int Y0,int Xe,int Ye,float tar_v){
 	int NXY;              //总步数
   int Fm = 0;           //偏差
   int Xm = X0, Ym = Y0; //当前坐标
@@ -122,7 +261,7 @@ void drawline(int X0,int Y0,int Xe,int Ye){
 			
 			NXY -= 1;
 			Fm = (Ym - Y0) * Xe - (Xm - X0) * Ye;
-			turn_coordinate((float)Xm,(float)Ym);
+			turn_coordinate((float)Xm,(float)Ym,tar_v);
 		}
 	}	
 }
@@ -136,6 +275,8 @@ void laser_init(laser *l,int x0,int y0){
 	l->x_target = 0;
 	l->y_cur = 0;
 	l->y_target = 0;
+	l->x0 = 0;
+	l->y0 = 0;
 }
 
 //设置激光点目标位置
@@ -149,8 +290,8 @@ int focus_calibration_point(laser *l){
 	static int count;
 	
 	//增量式PID
-	pid_incremental(&pid_stp1,laser_ins.x_target-cv_ins.laser_axis[0],15,-15);
-	pid_incremental(&pid_stp2,laser_ins.y_target-cv_ins.laser_axis[1],15,-15);
+//	pid_incremental(&pid_stp1,laser_ins.x_target-cv_ins.laser_axis[0],15,-15);
+//	pid_incremental(&pid_stp2,laser_ins.y_target-cv_ins.laser_axis[1],15,-15);
 	if(!IFMOVING(stepper1.motor_state))
 		StpDistanceSetBlocking(&stepper1,pid_stp1.output,200,100);
 	if(!IFMOVING(stepper2.motor_state))
@@ -164,6 +305,28 @@ int focus_calibration_point(laser *l){
 		return OK;
 	}
 	return NOT_OK;
+}
+
+/**
+ * @brief  开启PID
+ * @param  if_reset 0：不reset pid结构体；1	reset pid结构体
+ * @retval None
+ */
+void pid_start(int if_reset){
+	PID_F = PID_START;
+	if(if_reset==1){
+		pid_reset(&pid_stp1);
+		pid_reset(&pid_stp2);
+	}
+}
+
+/**
+ * @brief  关闭PID
+ * @param  None
+ * @retval None
+ */
+void pid_stop(void){
+	PID_F = PID_STOP;
 }
 
 /**
