@@ -139,6 +139,17 @@ void UartDateHandler(UartBuff *UartBuff1)
             /*****  *****/
 
         }
+				else if(UartBuff1->Flag == 0x41){
+					if(UartBuff1->Pointer<25){
+							UartBuff1->Uart_Data[UartBuff1->Pointer++] = UartBuff1->Rxbuf;
+						}
+						if(UartBuff1->Pointer==25){
+							if(UartBuff1->Uart_Data[0]=='r'){
+								UartBuff1->Flag = 0x81;
+							}
+							else UartBuff1->Flag=0xee;
+						}
+				}
         // 等待接收数据头
         else
         {
@@ -146,6 +157,11 @@ void UartDateHandler(UartBuff *UartBuff1)
             if (UartBuff1->Rxbuf == 'j')
             {
                 UartBuff1->Flag = 0x40;
+                UartBuff1->Uart_Data[UartBuff1->Pointer++] = UartBuff1->Rxbuf;
+            }
+						else if (UartBuff1->Rxbuf == 'r')
+            {
+                UartBuff1->Flag = 0x41;
                 UartBuff1->Uart_Data[UartBuff1->Pointer++] = UartBuff1->Rxbuf;
             }
             else
@@ -159,6 +175,25 @@ void UartDateHandler(UartBuff *UartBuff1)
 			UartBuff1->Flag = 0x0e;
 			UartBuff1->Pointer = 0;
 			sscanf((char*)UartBuff1->Uart_Data,"j%3d%3d",&cv_ins.laser_axis[0],&(cv_ins.laser_axis[1]));
+			laser_ins.x_cur = cv_ins.laser_axis[0];
+			laser_ins.y_cur = cv_ins.laser_axis[1];
+		}
+		else if(UartBuff1->Flag==0x81){
+			UartBuff1->Flag = 0x0e;
+			UartBuff1->Pointer = 0;
+			sscanf((char*)UartBuff1->Uart_Data,"r%3d%3d%3d%3d%3d%3d%3d%3d",&(cv_ins.rectangular_axis[0]),&cv_ins.rectangular_axis[1],
+																				 &cv_ins.rectangular_axis[2],&cv_ins.rectangular_axis[3],
+																				 &cv_ins.rectangular_axis[4],&cv_ins.rectangular_axis[5],
+																			   &cv_ins.rectangular_axis[6],&cv_ins.rectangular_axis[7]);
+//			]=UartBuff1->Uart_Data[1];
+//			cv_ins.rectangular_axis[1]=UartBuff1->Uart_Data[2];
+//			cv_ins.rectangular_axis[2]=UartBuff1->Uart_Data[3];
+//			cv_ins.rectangular_axis[3]=UartBuff1->Uart_Data[4];
+//			cv_ins.rectangular_axis[4]=UartBuff1->Uart_Data[5];
+//			cv_ins.rectangular_axis[5]=UartBuff1->Uart_Data[6];
+//			cv_ins.rectangular_axis[6]=UartBuff1->Uart_Data[7];
+//			cv_ins.rectangular_axis[7]=UartBuff1->Uart_Data[8];
+			//sscanf((char*)UartBuff1->Uart_Data,"j%3d%3d",&cv_ins.laser_axis[0],&(cv_ins.laser_axis[1]));
 		}
 		//故障处理
 		if(UartBuff1->Flag==0xee){

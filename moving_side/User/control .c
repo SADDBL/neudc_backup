@@ -8,7 +8,7 @@
 /***** 顶层 *****/
 //任务二，沿边线走
 void mission2(void){
-	static int state_val,count,i,j,exit = NOT_OK;
+	static int state_val,count,i,j,exit = NOT_OK,flag = NOT_OK;
 	while(1){
 		switch(state_val){
 			case 0:{
@@ -20,34 +20,46 @@ void mission2(void){
 				break;
 			}
 			case 1:{
-				drawline(laser_ins.x_axis,laser_ins.y_axis,mission2_point_list[0],mission2_point_list[1],50);
-				for(i=0;i<20;i++)
-					for(j=0;j<1000;j++);
-				state_val++;
+				if(flag==NOT_OK){
+					move_derectly(mission2_point_list[0],mission2_point_list[1],3000);
+					flag = OK;
+				}
+				//drawline(laser_ins.x_axis,laser_ins.y_axis,mission2_point_list[0],mission2_point_list[1],50);
+//				for(i=0;i<20;i++)
+//					for(j=0;j<1000;j++);
+				if(!IFMOVING(stepper1.motor_state)&&!IFMOVING(stepper2.motor_state)&&flag==OK)
+					state_val++;
 				break;
 			}
 			case 2:{
-				drawline(laser_ins.x_axis,laser_ins.y_axis,mission2_point_list[2],mission2_point_list[3],50);
+				drawline(laser_ins.x_axis,laser_ins.y_axis,mission2_point_list[2],mission2_point_list[3],4000);
 				for(i=0;i<20;i++)
 					for(j=0;j<1000;j++);
 				state_val++;
 				break;
 			}
 			case 3:{
-				drawline(laser_ins.x_axis,laser_ins.y_axis,mission2_point_list[4],mission2_point_list[5],50);
+				drawline(laser_ins.x_axis,laser_ins.y_axis,mission2_point_list[4],mission2_point_list[5],4000);
 				for(i=0;i<20;i++)
 					for(j=0;j<1000;j++);
 				state_val++;
 				break;
 			}
 			case 4:{
-				drawline(laser_ins.x_axis,laser_ins.y_axis,mission2_point_list[6],mission2_point_list[7],50);
+				drawline(laser_ins.x_axis,laser_ins.y_axis,mission2_point_list[6],mission2_point_list[7],4000);
 				for(i=0;i<20;i++)
 					for(j=0;j<1000;j++);
 				state_val++;
 				break;
 			}
 			case 5:{
+				drawline(laser_ins.x_axis,laser_ins.y_axis,mission2_point_list[0],mission2_point_list[1],4000);
+				for(i=0;i<20;i++)
+					for(j=0;j<1000;j++);
+				state_val=6;
+				break;
+			}
+			case 6:{
 				exit = OK;
 				break;
 			}
@@ -169,9 +181,13 @@ void calibration(void){
 }
 
 void reset2origin(void){
-	
+	move_derectly(0,0,1000);
 }
 
+void motor_reset2origin(void){
+	StpDistanceSetBlocking(&stepper1,0-stepper1.stepangle*stepper1.position_ctnow,1000,500);
+	StpDistanceSetBlocking(&stepper2,0-stepper2.stepangle*stepper2.position_ctnow,1000,500);
+}
 
 /*
  * @brief：激光点打在屏幕原点时，计算屏幕坐标系的原点（即电机与屏幕垂直时激光点坐标）
@@ -180,11 +196,23 @@ void reset2origin(void){
    */
 void set_origin(void){
 	float x0,y0,sqx,temp;
-	temp = tanf(-stepper1.position_ctnow*D_ANG);
+	temp = tanf(-stepper2.position_ctnow*stepper2.stepangle);
 	sqx = L*L*(1+temp*temp);
 	sqx = sqrtf(sqx);
 	x0 = laser_ins.x_axis + L*temp;
-	y0 = laser_ins.y_axis - sqx*tanf(-stepper2.position_ctnow*D_ANG);
+	y0 = laser_ins.y_axis - sqx*tanf(-stepper1.position_ctnow*stepper1.stepangle);
+	
+	laser_ins.x0 = x0;
+	laser_ins.y0 = y0;
+}
+
+void cal_axis(void){
+	float x0,y0,sqx,temp;
+	temp = tanf(-stepper2.position_ctnow*stepper2.stepangle);
+	sqx = L*L*(1+temp*temp);
+	sqx = sqrtf(sqx);
+	x0 = L*temp;
+	y0 = sqx*tanf(-stepper1.position_ctnow*stepper1.stepangle);
 	
 	laser_ins.x0 = x0;
 	laser_ins.y0 = y0;
@@ -202,22 +230,22 @@ void turn_coordinate(float x, float y,float tar_v)
   float angle_x, angle_y;
   float d_angx, d_angy;
   float sqx;
-	
+	//y+=50;
 	//计算需要转到的角度
   sqx = sqrtf(L * L + x * x);
-  angle_x = atan(x / L) * 180 / PI;
-  angle_y = atan(y / sqx) * 180 / PI;
+  angle_x = atanf(x / L) * 180 / PI;
+  angle_y = atanf(y / sqx) * 180 / PI;
 	
 	//计算需要转过的角度
-	d_angx = angle_x - stepper1.position_ctnow*stepper1.stepangle;
-	d_angy = angle_y - stepper2.position_ctnow*stepper1.stepangle;
+	d_angx = angle_x - stepper2.position_ctnow*stepper2.stepangle;
+	d_angy = angle_y - stepper1.position_ctnow*stepper1.stepangle;
 	
-	if(fabs(d_angx)>stepper1.stepangle){
-		StpDistanceSetBlocking(&stepper1,d_angx,500,tar_v);
+	if(fabs(d_angx)>stepper2.stepangle){
+		StpDistanceSetBlocking(&stepper2,d_angx,500,tar_v);
 		laser_ins.x_axis = x;
 		}
 	if(fabs(d_angy)>stepper1.stepangle){
-		StpDistanceSetBlocking(&stepper2,d_angy,500,tar_v);
+		StpDistanceSetBlocking(&stepper1,d_angy,500,tar_v);
 		laser_ins.y_axis = y;
 	}
 }
@@ -231,11 +259,13 @@ void turn_coordinate(float x, float y,float tar_v)
 void drawline(int X0,int Y0,int Xe,int Ye,float tar_v){
 	int NXY;              //总步数
   int Fm = 0;           //偏差
-  int Xm = X0, Ym = Y0; //当前坐标
+  int Xm , Ym; //当前坐标
   uint8_t XOY;            //象限
-	
+//	X0 = -X0;
+//	Y0 = -Y0;
 	if(X0!=laser_ins.x_axis)X0 = laser_ins.x_axis;
 	if(Y0!=laser_ins.y_axis)Y0 = laser_ins.y_axis;
+	Ye +=50;
 	Xm = X0;
 	Ym = Y0;
   Xe = Xe - X0;
@@ -266,6 +296,37 @@ void drawline(int X0,int Y0,int Xe,int Ye,float tar_v){
 	}	
 }
 
+/*
+ * @brief：直接移动到目标点
+ * @param：x,y
+ * @param：tar_v	调节电机速度，数字越大越慢，500速度适中
+ * @return： 无
+   */
+void move_derectly(int x,int y,float tar_v){
+	float angle_x, angle_y;
+  float d_angx, d_angy;
+  float sqx;
+	y+=50;
+//	x=-x;
+//	y=-y;
+	//计算需要转到的角度
+  sqx = sqrtf(L * L + x * x);
+  angle_x = atanf(x / L) * 180 / PI;
+  angle_y = atanf(y / sqx) * 180 / PI;
+	
+	//计算需要转过的角度
+	d_angx = angle_x - stepper2.position_ctnow*stepper2.stepangle;
+	d_angy = angle_y - stepper1.position_ctnow*stepper1.stepangle;
+	
+	if(fabs(d_angx)>stepper2.stepangle){
+		StpDistanceSetBlocking(&stepper2,d_angx,500,tar_v);
+		laser_ins.x_axis = x;
+		}
+	if(fabs(d_angy)>stepper1.stepangle){
+		StpDistanceSetBlocking(&stepper1,d_angy,500,tar_v);
+		laser_ins.y_axis = y;
+	}
+}
 
 /***** 底层 *****/
 void laser_init(laser *l,int x0,int y0){
@@ -369,7 +430,7 @@ float pid_position(pid *p, float err, float outMax, float outMin, float i_Max){
 //	else if(a==1){
 //		p->err = err;
 //	}
-	
+		p->err = err;
     // 抗积分饱和
     if (p->output_last > outMax || p->output_last < outMin)
     {

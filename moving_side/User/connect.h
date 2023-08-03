@@ -2,7 +2,7 @@
 #define _CONNECT_H_
 #include "main.h"
 #include <string.h>
-#define datasize (uint8_t)14 // uint8_t  即为unsigned char 八位
+#define datasize (uint8_t)25 // uint8_t  即为unsigned char 八位
 #define HMIUart huart2
 #define LINE_MID_DATA 320
 #define X_MID 345

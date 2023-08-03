@@ -106,33 +106,45 @@ int main(void)
 	HAL_UART_Receive_IT(&huart2,&(uart_ins2.Rxbuf),1);
 	
 	Init_Stepper(&stepper1,dir1_GPIO_Port,dir1_Pin,&htim2,TIM_CHANNEL_1,0.05625f);
-	Init_Stepper(&stepper2,dir2_GPIO_Port,dir2_Pin,&htim2,TIM_CHANNEL_2,0.05625f);
+	Init_Stepper(&stepper2,dir2_GPIO_Port,dir2_Pin,&htim2,TIM_CHANNEL_2,0.05625f/2);
 	
 	laser_init(&laser_ins,0,0);
 	
-	float kp_stp1=0,ki_stp1=0,kd_stp1=0;
-	float kp_stp2=0,ki_stp2=0,kd_stp2=0;
+	float kp_stp1=0.1,ki_stp1=0.00,kd_stp1=0;
+	float kp_stp2=0.1,ki_stp2=0.00,kd_stp2=0;
 	Laser_On;
 	pid_init(&pid_stp1,kp_stp1,ki_stp1,kd_stp1);
 	pid_init(&pid_stp2,kp_stp2,ki_stp2,kd_stp2);
+	pid_stop();
+//	HAL_UART_Transmit(&huart1,(uint8_t*)"a",1,10);
+//	HAL_Delay(300);
+//	HAL_UART_Transmit(&huart1,(uint8_t*)"b",1,10);
+//	move_derectly(mission2_point_list[0],mission2_point_list[1],500);
 //	drawline(0,0,500,500,30);
-	StpDistanceSetBlocking(&stepper2,90,1000,100);
-//	StpDistanceSetBlocking(&stepper2,-50,1000,500);
+//	StpDistanceSetBlocking(&stepper2,3,1000,100);
+	HAL_Delay(3000);
+//	StpDistanceSetBlocking(&stepper2,-10,1000,500);
 //	drawline(0,0,0,200,500);
-	HAL_Delay(1000);
+//	HAL_Delay(3000);
 //	drawline(200,0,200,200);
-	HAL_Delay(1000);
+//	HAL_Delay(1000);
 //	drawline(-200,200,-200,0);
 //	HAL_Delay(1000);
 //	drawline(-200,0,0,0);
   /* USER CODE END 2 */
-
+//	laser_set_target(&laser_ins,cv_ins.rectangular_axis[0],cv_ins.rectangular_axis[1]);
+//	laser_set_target(&laser_ins,320,240);
+	//pid_start(1);
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   while (1)
   {
     /* USER CODE END WHILE */
-
+		mission2();
+		HAL_Delay(1000);
+		reset2origin();
+	//	cal_axis();
+		
     /* USER CODE BEGIN 3 */
   }
   /* USER CODE END 3 */
@@ -188,8 +200,18 @@ void SystemClock_Config(void)
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim){
 	if(htim->Instance==TIM4){
 		if(PID_F==PID_START){
-			pid_incremental(&pid_stp1,laser_ins.x_target-cv_ins.laser_axis[0],15,-15);
-			pid_incremental(&pid_stp2,laser_ins.y_target-cv_ins.laser_axis[1],15,-15);
+//			pid_incremental(&pid_stp2,laser_ins.x_target-laser_ins.x_cur,3,-3);
+//			pid_incremental(&pid_stp1,laser_ins.y_target-laser_ins.y_cur,3,-3);
+//			if(!IFMOVING(stepper1.motor_state))
+//				StpDistanceSetBlocking(&stepper1,-pid_stp1.output,200,500);
+//			if(!IFMOVING(stepper2.motor_state))
+//				StpDistanceSetBlocking(&stepper2,-pid_stp2.output,200,500);
+			pid_position(&pid_stp2,laser_ins.x_target-laser_ins.x_cur,10,-10,3000);
+			pid_position(&pid_stp1,laser_ins.y_target-laser_ins.y_cur,15,-15,3000);
+		//	if(!IFMOVING(stepper1.motor_state))
+		//		StpDistanceSetBlocking(&stepper1,stepper1.position_ctnow*stepper1.stepangle-pid_stp1.output,200,500);
+			if(!IFMOVING(stepper2.motor_state))
+				StpDistanceSetBlocking(&stepper2,-stepper2.position_ctnow*stepper2.stepangle+pid_stp2.output,200,500);
 		}
 	}
 	

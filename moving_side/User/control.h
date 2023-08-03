@@ -26,13 +26,16 @@ void calibration(void);
 void set_origin(void);
 void drawline(int X0,int Y0,int Xe,int Ye,float tar_v);
 void turn_coordinate(float x, float y,float tar_v);
-
+void mission2(void);
+void move_derectly(int x,int y,float tar_v);
+void cal_axis(void);
 /***** µ×²ã *****/
 void pid_start(int if_reset);
 void pid_stop(void);
 void laser_init(laser *l,int x0,int y0);
 void laser_set_target(laser *l,int x,int y);
 int focus_calibration_point(laser *l);
+void reset2origin(void);
 void pid_init(pid *pid_controller, float p, float i, float d);
 float pid_incremental(pid *p, float err, float outMax, float outMin);
 float pid_position(pid *p, float err, float outMax, float outMin, float i_Max);
