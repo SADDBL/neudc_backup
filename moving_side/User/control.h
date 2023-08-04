@@ -24,10 +24,13 @@ typedef struct {
 /************************** LYF ************************/
 void calibration(void);
 void set_origin(void);
+void motor_reset2origin(void);
 void drawline(int X0,int Y0,int Xe,int Ye,float tar_v);
 void turn_coordinate(float x, float y,float tar_v);
 void mission2(void);
+void mission3(void);
 void move_derectly(int x,int y,float tar_v);
+void axis_cv2screen(int cvx,int cvy,int *screenx,int *screeny);
 void cal_axis(void);
 /***** µ×²ã *****/
 void pid_start(int if_reset);

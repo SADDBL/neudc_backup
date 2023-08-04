@@ -181,6 +181,7 @@ void UartDateHandler(UartBuff *UartBuff1)
 		else if(UartBuff1->Flag==0x81){
 			UartBuff1->Flag = 0x0e;
 			UartBuff1->Pointer = 0;
+			cv_ins.rectangular_det_F = 1;
 			sscanf((char*)UartBuff1->Uart_Data,"r%3d%3d%3d%3d%3d%3d%3d%3d",&(cv_ins.rectangular_axis[0]),&cv_ins.rectangular_axis[1],
 																				 &cv_ins.rectangular_axis[2],&cv_ins.rectangular_axis[3],
 																				 &cv_ins.rectangular_axis[4],&cv_ins.rectangular_axis[5],

@@ -116,13 +116,13 @@ int main(void)
 	pid_init(&pid_stp1,kp_stp1,ki_stp1,kd_stp1);
 	pid_init(&pid_stp2,kp_stp2,ki_stp2,kd_stp2);
 	pid_stop();
-//	HAL_UART_Transmit(&huart1,(uint8_t*)"a",1,10);
-//	HAL_Delay(300);
-//	HAL_UART_Transmit(&huart1,(uint8_t*)"b",1,10);
+	
+	HAL_Delay(3000);
+	
 //	move_derectly(mission2_point_list[0],mission2_point_list[1],500);
 //	drawline(0,0,500,500,30);
 //	StpDistanceSetBlocking(&stepper2,3,1000,100);
-	HAL_Delay(3000);
+//	HAL_Delay(3000);
 //	StpDistanceSetBlocking(&stepper2,-10,1000,500);
 //	drawline(0,0,0,200,500);
 //	HAL_Delay(3000);
@@ -137,12 +137,17 @@ int main(void)
 	//pid_start(1);
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
+	mission3();
   while (1)
   {
     /* USER CODE END WHILE */
-		mission2();
-		HAL_Delay(1000);
-		reset2origin();
+//		HAL_UART_Transmit(&huart1,(uint8_t*)"b",1,10);
+//		mission2();
+			
+//		HAL_Delay(1000);
+//		motor_reset2origin();
+//		HAL_Delay(1000);
+//		break;
 	//	cal_axis();
 		
     /* USER CODE BEGIN 3 */

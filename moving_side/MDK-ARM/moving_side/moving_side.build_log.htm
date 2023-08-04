@@ -27,11 +27,22 @@ Project File Date:  08/02/2023
 <h2>Output:</h2>
 *** Using Compiler 'V5.06 update 7 (build 960)', folder: 'D:\keil3.5\ARM\ARMCC\Bin'
 Build target 'moving_side'
+compiling macro.c...
 compiling main.c...
+compiling connect.c...
+compiling control .c...
+..\User\control .c(12): warning:  #177-D: variable "count"  was declared but never referenced
+  	static int state_val,count,i,j,exit = NOT_OK,flag = NOT_OK;
+..\User\control .c(83): warning:  #177-D: variable "count"  was declared but never referenced
+  	static int state_val,count,exit = NOT_OK;
+..\User\control .c(215): warning:  #111-D: statement is unreachable
+  			state_val=0;
+..\User\control .c: 3 warnings, 0 errors
+compiling stepper.c...
 linking...
-Program Size: Code=19484 RO-data=632 RW-data=108 ZI-data=1892  
+Program Size: Code=19608 RO-data=632 RW-data=60 ZI-data=1924  
 FromELF: creating hex file...
-"moving_side\moving_side.axf" - 0 Error(s), 0 Warning(s).
+"moving_side\moving_side.axf" - 0 Error(s), 3 Warning(s).
 
 <h2>Software Packages used:</h2>
 

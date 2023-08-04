@@ -39,3 +39,4 @@ moving_side\control .o: ../Core/Inc/tim.h
 moving_side\control .o: D:\keil3.5\ARM\ARMCC\Bin\..\include\math.h
 moving_side\control .o: ..\User\connect.h
 moving_side\control .o: D:\keil3.5\ARM\ARMCC\Bin\..\include\string.h
+moving_side\control .o: ../Core/Inc/usart.h

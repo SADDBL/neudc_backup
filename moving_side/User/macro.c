@@ -12,7 +12,7 @@ cv_data cv_ins={0};
 /********************** control文件 ***********************/
 
 int calibration_point_list[10] = {0};
-int mission2_point_list[8] = {-250,-250,-250,250,250,250,250,-250};
+int mission2_point_list[8] = {-250*K,-250*K,-250*K,250*K,250*K,250*K,250*K,-250*K};
 pid pid_stp1,pid_stp2;	//1：红色激光笔x轴，2：红色激光笔y轴
 laser laser_ins;
 

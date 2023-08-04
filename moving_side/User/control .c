@@ -1,5 +1,6 @@
 #include "control.h"
 #include "macro.h"
+#include "usart.h"
 #include <math.h>
 #include <math.h>
 
@@ -12,11 +13,13 @@ void mission2(void){
 	while(1){
 		switch(state_val){
 			case 0:{
-				count++;
-				if(count==30){
+			//	count++;
+				//if(count==30){
 					state_val++;
+				//	count = 0;
 					Laser_On;
-				}
+				flag = NOT_OK;
+			//	}
 				break;
 			}
 			case 1:{
@@ -24,6 +27,7 @@ void mission2(void){
 					move_derectly(mission2_point_list[0],mission2_point_list[1],3000);
 					flag = OK;
 				}
+				//drawline(laser_ins.x_axis,laser_ins.y_axis,mission2_point_list[0],mission2_point_list[1],30);
 				//drawline(laser_ins.x_axis,laser_ins.y_axis,mission2_point_list[0],mission2_point_list[1],50);
 //				for(i=0;i<20;i++)
 //					for(j=0;j<1000;j++);
@@ -32,28 +36,28 @@ void mission2(void){
 				break;
 			}
 			case 2:{
-				drawline(laser_ins.x_axis,laser_ins.y_axis,mission2_point_list[2],mission2_point_list[3],4000);
+				drawline(laser_ins.x_axis,laser_ins.y_axis,mission2_point_list[2],mission2_point_list[3],3000);
 				for(i=0;i<20;i++)
 					for(j=0;j<1000;j++);
 				state_val++;
 				break;
 			}
 			case 3:{
-				drawline(laser_ins.x_axis,laser_ins.y_axis,mission2_point_list[4],mission2_point_list[5],4000);
+				drawline(laser_ins.x_axis,laser_ins.y_axis,mission2_point_list[4],mission2_point_list[5],3000);
 				for(i=0;i<20;i++)
 					for(j=0;j<1000;j++);
 				state_val++;
 				break;
 			}
 			case 4:{
-				drawline(laser_ins.x_axis,laser_ins.y_axis,mission2_point_list[6],mission2_point_list[7],4000);
+				drawline(laser_ins.x_axis,laser_ins.y_axis,mission2_point_list[6],mission2_point_list[7],3000);
 				for(i=0;i<20;i++)
 					for(j=0;j<1000;j++);
 				state_val++;
 				break;
 			}
 			case 5:{
-				drawline(laser_ins.x_axis,laser_ins.y_axis,mission2_point_list[0],mission2_point_list[1],4000);
+				drawline(laser_ins.x_axis,laser_ins.y_axis,mission2_point_list[0],mission2_point_list[1],3000);
 				for(i=0;i<20;i++)
 					for(j=0;j<1000;j++);
 				state_val=6;
@@ -68,6 +72,7 @@ void mission2(void){
 		if(exit==OK){
 			hmi_data_ins.mission_select = 0;
 			state_val=0;
+			exit = NOT_OK;
 			break;
 		}
 	}
@@ -75,47 +80,78 @@ void mission2(void){
 
 //任务三、四，沿纸靶走
 void mission3(void){
-	static int state_val,count,i,j,exit = NOT_OK;
+	static int state_val,count,exit = NOT_OK;
+	int i,j;
 	while(1){
 		switch(state_val){
 			case 0:{
-				count++;
-				if(count==30){
+				if(cv_ins.rectangular_det_F==0){
+					RECTANGULAR_DETECT;
+				}
+				if(cv_ins.rectangular_det_F==1){
+					axis_cv2screen(cv_ins.rectangular_axis[0],cv_ins.rectangular_axis[1],
+												 &cv_ins.rectangular_axis_screen[0],&cv_ins.rectangular_axis_screen[1]);
+					axis_cv2screen(cv_ins.rectangular_axis[2],cv_ins.rectangular_axis[3],
+												 &cv_ins.rectangular_axis_screen[3],&cv_ins.rectangular_axis_screen[3]);
+					axis_cv2screen(cv_ins.rectangular_axis[4],cv_ins.rectangular_axis[5],
+												 &cv_ins.rectangular_axis_screen[4],&cv_ins.rectangular_axis_screen[5]);
+					axis_cv2screen(cv_ins.rectangular_axis[6],cv_ins.rectangular_axis[7],
+												 &cv_ins.rectangular_axis_screen[6],&cv_ins.rectangular_axis_screen[7]);
+					cv_ins.rectangular_det_F = 0;
+					for(i=0;i<8;i++)
+						cv_ins.rectangular_axis_screen[i]*=K;
 					state_val++;
+					LASER_DETECT;
 					Laser_On;
 				}
 				break;
 			}
 			case 1:{
-				
-				drawline(laser_ins.x_axis,laser_ins.y_axis,cv_ins.rectangular_axis[0],cv_ins.rectangular_axis[1],50);
+				//move_derectly(cv_ins.rectangular_axis_screen[0],cv_ins.rectangular_axis_screen[1],6000);
+				drawline(laser_ins.x_axis,laser_ins.y_axis,cv_ins.rectangular_axis_screen[0],cv_ins.rectangular_axis_screen[1],3000);
 				for(i=0;i<20;i++)
 					for(j=0;j<1000;j++);
+				HAL_Delay(4000);
 				state_val++;
 				break;
 			}
 			case 2:{
-				drawline(laser_ins.x_axis,laser_ins.y_axis,cv_ins.rectangular_axis[2],cv_ins.rectangular_axis[3],50);
+				//move_derectly(cv_ins.rectangular_axis_screen[2],cv_ins.rectangular_axis_screen[3],6000);
+				drawline(laser_ins.x_axis,laser_ins.y_axis,cv_ins.rectangular_axis_screen[2],cv_ins.rectangular_axis_screen[3],3000);
 				for(i=0;i<20;i++)
 					for(j=0;j<1000;j++);
+				HAL_Delay(4000);
 				state_val++;
 				break;
 			}
 			case 3:{
-				drawline(laser_ins.x_axis,laser_ins.y_axis,cv_ins.rectangular_axis[4],cv_ins.rectangular_axis[5],50);
+				//move_derectly(cv_ins.rectangular_axis_screen[4],cv_ins.rectangular_axis_screen[5],6000);
+				drawline(laser_ins.x_axis,laser_ins.y_axis,cv_ins.rectangular_axis_screen[4],cv_ins.rectangular_axis_screen[5],3000);
 				for(i=0;i<20;i++)
 					for(j=0;j<1000;j++);
+				HAL_Delay(4000);
 				state_val++;
 				break;
 			}
 			case 4:{
-				drawline(laser_ins.x_axis,laser_ins.y_axis,cv_ins.rectangular_axis[6],mission2_point_list[7],50);
+				//move_derectly(cv_ins.rectangular_axis_screen[6],cv_ins.rectangular_axis_screen[7],6000);
+				drawline(laser_ins.x_axis,laser_ins.y_axis,cv_ins.rectangular_axis_screen[6],cv_ins.rectangular_axis_screen[7],3000);
 				for(i=0;i<20;i++)
 					for(j=0;j<1000;j++);
+				HAL_Delay(4000);
 				state_val++;
 				break;
 			}
 			case 5:{
+				//move_derectly(cv_ins.rectangular_axis_screen[0],cv_ins.rectangular_axis_screen[1],6000);
+			  drawline(laser_ins.x_axis,laser_ins.y_axis,cv_ins.rectangular_axis_screen[0],cv_ins.rectangular_axis_screen[1],3000);
+				for(i=0;i<20;i++)
+					for(j=0;j<1000;j++);
+				state_val++;
+				HAL_Delay(4000);
+				break;
+			}
+			case 6:{
 				exit = OK;
 				break;
 			}
@@ -124,6 +160,7 @@ void mission3(void){
 		if(exit==OK){
 			hmi_data_ins.mission_select = 0;
 			state_val=0;
+			exit = NOT_OK;
 			break;
 		}
 	}
@@ -180,13 +217,41 @@ void calibration(void){
 	}
 }
 
+
 void reset2origin(void){
 	move_derectly(0,0,1000);
 }
 
+/*
+ * @brief：将视觉坐标系转换到屏幕坐标系
+ * @param：None
+ * @return：None
+   */
+void axis_cv2screen(int cvx,int cvy,int *screenx,int *screeny){
+	float x,y;
+	x = (cvx - 137.5f)/SCREEN_K;
+	y = -(cvy - 137.5f)/SCREEN_K;
+	*screenx = x;
+	*screeny = y;
+}
+
 void motor_reset2origin(void){
-	StpDistanceSetBlocking(&stepper1,0-stepper1.stepangle*stepper1.position_ctnow,1000,500);
-	StpDistanceSetBlocking(&stepper2,0-stepper2.stepangle*stepper2.position_ctnow,1000,500);
+	float angle_x,angle_y;
+	while(stepper1.position_ctnow!=0||stepper2.position_ctnow!=0){//stepper1.position_ctnow>1||stepper2.position_ctnow>1||stepper1.position_ctnow<-1||stepper2.position_ctnow<-1){
+		if(!IFMOVING(stepper1.motor_state)&&stepper1.position_ctnow!=0){
+			angle_y = stepper1.stepangle*stepper1.position_ctnow;
+			if(fabs(angle_y)<0.05626f)
+				angle_y = 0.05626f*stepper1.position_ctnow;
+			StpDistanceSetBlocking(&stepper1,-angle_y,1000,1000);
+		}
+		if(!IFMOVING(stepper2.motor_state)&&stepper2.position_ctnow!=0) {
+			angle_x = stepper2.stepangle*stepper2.position_ctnow;
+			if(fabs(angle_x)<0.028126f)
+				angle_x = 0.028126f*stepper2.position_ctnow;
+			StpDistanceSetBlocking(&stepper2,-angle_x,1000,1000);
+		}
+	}
+	Laser_On;
 }
 
 /*
@@ -265,7 +330,7 @@ void drawline(int X0,int Y0,int Xe,int Ye,float tar_v){
 //	Y0 = -Y0;
 	if(X0!=laser_ins.x_axis)X0 = laser_ins.x_axis;
 	if(Y0!=laser_ins.y_axis)Y0 = laser_ins.y_axis;
-	Ye +=50;
+	//Ye +=50;
 	Xm = X0;
 	Ym = Y0;
   Xe = Xe - X0;
@@ -299,14 +364,14 @@ void drawline(int X0,int Y0,int Xe,int Ye,float tar_v){
 /*
  * @brief：直接移动到目标点
  * @param：x,y
- * @param：tar_v	调节电机速度，数字越大越慢，500速度适中
+ * @param：tar_v	调节电机速度，数字越大越慢，1000速度适中
  * @return： 无
    */
 void move_derectly(int x,int y,float tar_v){
 	float angle_x, angle_y;
   float d_angx, d_angy;
   float sqx;
-	y+=50;
+//	y+=50;
 //	x=-x;
 //	y=-y;
 	//计算需要转到的角度

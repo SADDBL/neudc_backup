@@ -20,7 +20,9 @@ typedef struct UartRecieve
 
 typedef struct{
 	int laser_axis[2];	//激光点坐标
-	int rectangular_axis[8];	//纸靶坐标
+	int rectangular_axis[8];	//纸靶视觉坐标系坐标
+	int rectangular_axis_screen[8];	//纸靶屏幕坐标系坐标
+	int rectangular_det_F;
 }cv_data;
 
 typedef struct{
